@@ -15,18 +15,22 @@ app.addTask(function(cb) {
     Model.init(Setting.model, function(err) {
         if (err) cb(err);
         else {
+            const MongoDB = require("ecoweb/model/MongoDB");
+            const DAOFactory = require("ecoweb/dao/DAOFactory");
+            DAOFactory.init(MongoDB.getDBByName(null) , { folder:PATH.join(global.APP_ROOT, "server/dao") });
             cb();
         }
     });
 });
 
-app.addTask(function(cb){
+//内部通信
+/*app.addTask(function(cb){
     Ecosystem.init(null,function(){
         const EcosystemExt = require('./server/EcosystemExt');
         EcosystemExt.init();
         cb();
     })
-});
+});*/
 
 app.addTask(function(cb) {
     //suppoty CORS

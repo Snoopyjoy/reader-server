@@ -9,7 +9,21 @@ module.exports = {
     host:"0.0.0.0",
     port: 6403,
     model: {
-        redis: {
+        db: {
+            host:"127.0.0.1",
+            port:27017,
+            name:"book",
+            option: {
+                driver:"mongoose",  //or "native"
+                server: {
+                    reconnectTries: Number.MAX_VALUE,
+                    poolSize: 20,
+                    socketOptions: { keepAlive: 120 }
+                }
+            }
+        },
+        //Redis配置
+        /*redis: {
             host:"127.0.0.1",
             port:6379,
             maxLockTime: 15000, //最大锁时间
@@ -22,7 +36,7 @@ module.exports = {
             cache: {
                 group_sep: "->"
             }
-        }
+        }*/
     },
     ecosystem:{
         name: "app",
