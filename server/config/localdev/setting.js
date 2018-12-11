@@ -38,6 +38,12 @@ module.exports = {
             }
         }*/
     },
+    session: {
+        onePointEnter:false,
+        cookiePath:"/",
+        secret:"reader@2018",
+        tokenExpireTime: 2400,  //sec
+    },
     ecosystem:{
         name: "app",
         timeout: 60000,

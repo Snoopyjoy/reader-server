@@ -10,6 +10,7 @@ const PATH = require("path");
 const Model = require("ecoweb/model/Model");
 const Ecosystem = require("ecoweb/eco/Ecosystem");
 const Setting = global.SETTING;
+const AuthorityChecker = require("ecoweb/utils/AuthorityChecker");
 
 app.addTask(function(cb) {
     Model.init(Setting.model, function(err) {
@@ -44,6 +45,12 @@ app.addTask(function(cb) {
     require("ecoweb/web/WebApp").start(Setting, function(webApp) {
         cb();
     });
+});
+
+app.addTask(function(cb){
+    AuthorityChecker.register( "userType", function( user, val ){
+        return user.type === val;
+    } );
 });
 
 app.run();
