@@ -48,8 +48,8 @@ app.addTask(function(cb) {
 });
 
 app.addTask(function(cb){
-    AuthorityChecker.register( "userType", function( user, val ){
-        return user.type === val;
+    AuthorityChecker.register( "userType", function( user, val , callback){
+        callback(user.type === val);
     } );
 });
 

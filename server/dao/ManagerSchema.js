@@ -17,13 +17,13 @@ const COLLECTION_NAME = "Manager";
 module.exports = function() {
     const schema = new Schema({
         _id: String,
-        nickname: { type:String, required:true },     //书名
-        username: { type:String, default: "" },      //选择人数
-        pwd: { type:String, default: true },   //评分
+        nickname: { type:String, required:true },     //昵称
+        username: { type:String, required:true },      //用户名
+        pwd: { type:String, default: true },   //密码
         avatar: { type:String, default: "" },      //图片
-        type: { type:Number, default: 1 },     //字数
+        type: { type:Number, default: 1 },     //类型
     }, { collection:COLLECTION_NAME, strict: true });
-    schema.index({ "username":1,"pwd":1 });
+    schema.index({ "username":1 });
 
     return { name:COLLECTION_NAME, ref:schema };
 }

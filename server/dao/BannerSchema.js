@@ -16,5 +16,16 @@ module.exports = function() {
         img: { type:String, required:true },     //展示图片url
         title: { type:String, default: "" },     //标题
     }, { collection:COLLECTION_NAME, strict: true });
+
+    schema.static( "add", async function( { book, img, title } ){
+        const bannerData = {
+            _id: book,
+            book: book,
+            img: img,
+            title: title
+        };
+        await this.findOneAndUpdate( { _id : book }, { $set: bannerData },  {"upsert": true } );
+    } );
+
     return { name:COLLECTION_NAME, ref:schema };
 }
