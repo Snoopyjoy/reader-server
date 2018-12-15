@@ -13,6 +13,8 @@ exports.config = {
         "banner":{ needLogin:false, checkParams:{}, optionalParams:{} },
         //@group 获取分组内容
         "group":{ needLogin:false, checkParams:{}, optionalParams:{} },
+        //@notice 公告
+        "notice":{ needLogin:false, checkParams:{}, optionalParams:{} },
     }
 };
 
@@ -33,4 +35,9 @@ exports.group = async function( params, user ){
         result.push( groupData );
     }
     return result;
+}
+
+exports.notice = async function( params, user ){
+    const now = Date.now();
+    return await Notice.findAll( { startTime: { "$lt":now }, endTime: { "$gte": now } }, { content:1, _id:1 } );
 }

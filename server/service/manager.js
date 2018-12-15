@@ -20,6 +20,10 @@ exports.config = {
         "addBook2Group":{ needLogin:true, checkParams:{ book:"string", group:"string" }, allow:[["userType", 1]] },
         //@removeBookFromGroup 从分组中移除书记 @book 书id @group 分组id
         "removeBookFromGroup":{ needLogin:true, checkParams:{ book:"string", group:"string" }, allow:[["userType", 1]] },
+        //@addNotice 添加公告 @content 公告内容 @startTime 开始时间(毫秒时间戳) @endTime 结束时间(毫秒时间戳)
+        "addNotice":{ needLogin:true, checkParams:{ content:"string" }, optionalParams:{startTime:"number", endTime:"number"}, allow:[["userType", 1]] },
+        //@removeNotice 移除公告 @id 公告id
+        "removeNotice":{ needLogin:true, checkParams:{ id:"string" }, allow:[["userType", 1]] },
     }
 };
 
@@ -68,6 +72,32 @@ exports.addBook2Group = async function( params, user ){
 
 exports.removeBookFromGroup = async function( params, user ){
     await BookGroup.removeBook( { id: params.group, book: params.book } );
+}
+
+exports.addNotice = async function( params, user ){
+    const now = Date.now();
+    const startTime = params.startTime || now;
+    const endTime = params.endTime;
+    if( endTime <= startTime ){
+        throw new Error("时间设置不正确");
+    }
+    if( endTime <= now ){
+        throw new Error("时间设置不正确");
+    }
+    await Notice.add( {
+        content: params.content,
+        startTime: startTime,
+        endTime: endTime
+    } )
+}
+
+exports.removeNotice = async function( params, user){
+    const id = params.id;
+    if( String(id).hasValue() ){
+        await Notice.remove( {
+            _id: id
+        } )
+    }
 }
 
 function $saveUserSession(user) {
