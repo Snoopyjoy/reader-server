@@ -15,6 +15,10 @@ exports.config = {
         "infoList":{ needLogin:false, checkParams:{ books:"array" }, optionalParams:{} },
         //@recommendBooks 根据图书id获取推荐图书列表 @id 图书id
         "recommendBooks":{ needLogin:false, checkParams:{ id:"string" }, optionalParams:{} },
+        //@content 获取内容 @id 图书id @chapter
+        "content":{ needLogin:false, checkParams:{ id:"string", chapter:"string" }, optionalParams:{} },
+        //@chapters 获取目录 @id 图书id
+        "chapters":{ needLogin:false, checkParams:{ id:"string" }, optionalParams:{} },
     }
 };
 exports.info = async function( params, user, req ,res){
@@ -29,4 +33,15 @@ exports.recommendBooks = async function( params, user, req ,res ){
     const bookData = await Book.findOne( {"_id":params.id}, { "like":1 } );
     const books = bookData.like.split("-");
     return await exports.infoList( { books: books } )
+}
+
+exports.content = async function( params, user, req ,res ){
+    const bookID = params.id;
+    const chapter = params.chapter;
+    return await BookContent.findOne( {"_id":`book_${bookID}_${chapter}`}, {title:1, content:1, book:1, chapter:1 } );
+}
+
+exports.chapters = async function( params, user, req ,res ){
+    const bookData = await Book.findOne( {"_id":params.id}, { "catalogue":1 } ) || { "catalogue":"" };
+    return bookData.catalogue.split("-");
 }
