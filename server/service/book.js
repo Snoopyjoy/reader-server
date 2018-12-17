@@ -9,10 +9,24 @@ exports.config = {
     name: "book",
     enabled: true,
     security: {
-        //@list 获取图书列表
-        "list":{ needLogin:false, checkParams:{}, optionalParams:{} },
+        //@info 获取图书 @id 图书id
+        "info":{ needLogin:false, checkParams:{ id:"string" }, optionalParams:{} },
+        //@infoList 批量获取图书 @books 图书id数组
+        "infoList":{ needLogin:false, checkParams:{ books:"array" }, optionalParams:{} },
+        //@recommendBooks 根据图书id获取推荐图书列表 @id 图书id
+        "recommendBooks":{ needLogin:false, checkParams:{ id:"string" }, optionalParams:{} },
     }
 };
-exports.list = async function( params, user, req ,res){
-    return null;
+exports.info = async function( params, user, req ,res){
+    return await Book.findOne( {"_id":params.id}, { "author":1, "images":1, "wordcount":1, "intro":1, "name":1, "type":1, "serialize": 1} )
+}
+
+exports.infoList = async function( params, user, req ,res ){
+    return await Book.findAll( { "_id": {$in:params.books} }, { "author":1, "images":1, "wordcount":1, "intro":1, "name":1, "type":1, "serialize": 1}  );
+}
+
+exports.recommendBooks = async function( params, user, req ,res ){
+    const bookData = await Book.findOne( {"_id":params.id}, { "like":1 } );
+    const books = bookData.like.split("-");
+    return await exports.infoList( { books: books } )
 }

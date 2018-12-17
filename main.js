@@ -43,6 +43,13 @@ app.addTask(function(cb) {
         next();
     });
     require("ecoweb/web/WebApp").start(Setting, function(webApp) {
+        /*webApp.all("*",function(req, res, next) {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Credentials", true);
+            res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Content-Length, Authorization, Accept, X-Requested-With");
+            res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
+            next();
+        });*/
         cb();
     });
 });
