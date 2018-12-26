@@ -19,6 +19,10 @@ exports.config = {
         "content":{ needLogin:false, checkParams:{ id:"string", chapter:"string" }, optionalParams:{} },
         //@chapters 获取目录 @id 图书id
         "chapters":{ needLogin:false, checkParams:{ id:"string" }, optionalParams:{} },
+        //@search 搜索 @keywords 搜索关键字 @index 页码 @num 每页数量
+        "search":{ needLogin:false, checkParams:{ keywords:"string"}, optionalParams:{index:"number", num:"number" } },
+        //@hotwords 搜索关键字
+        "hotwords":{ needLogin:false, checkParams:{}, optionalParams:{} }
     }
 };
 exports.info = async function( params, user, req ,res){
@@ -44,4 +48,21 @@ exports.content = async function( params, user, req ,res ){
 exports.chapters = async function( params, user, req ,res ){
     const bookData = await Book.findOne( {"_id":params.id}, { "catalogue":1 } ) || { "catalogue":"" };
     return bookData.catalogue.split("-");
+}
+
+exports.search = async function( params, user, req ,res ){
+    const index = params.index || 0;
+    const num = params.num || 10;
+    const keywords = params.keywords;
+    const result = await Book.search({ $or: [{name:{ $regex:keywords }},
+            {author:{ $regex:keywords }},
+            {type:{ $regex:keywords }}
+        ] },
+        {needTotal:true,fields:{"author":1, "images":1, "wordcount":1, "intro":1, "name":1, "type":1, "serialize": 1},
+            pagination:{index:index,num:num}});
+    return result;
+}
+
+exports.hotwords = async function( params, user, req ,res  ){
+    return [{"word":"玄幻"},{"word":"科幻"},{"word":"历史"}];
 }
